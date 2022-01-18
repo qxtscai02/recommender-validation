@@ -6,6 +6,8 @@ import random
 import copy
 FS = s3fs.S3FileSystem(anon=False)
 import gspread
+from datetime import datetime
+import pytz
 
 @st.cache
 def load(configpath, testdatapath):
@@ -45,6 +47,7 @@ def send(user, relevant, interesting=None):
     row_to_update = int(ws.cell(2,1).value)+2
     ws.update_cell(row_to_update,2,user)
     ws.update_cell(row_to_update,3,package)
+    ws.update_cell(row_to_update,4,datetime.utcnow().replace(tzinfo=pytz.timezone('Asia/Singapore')).strftime('%Y-%m-%d %H:%M:%S'))
     st.balloons()
     st.success('Thank you!')
 
@@ -65,15 +68,16 @@ def main(user, domain, data):
 
     styler = 'margin-block-start:0px;margin-block-end:11px; padding-left:20px; width:80%; min-width:400px; max-width: 700px'
     welcome = [
-        (f'<p style="{styler}">Welcome! Thank you for taking the time to help us with this experiment.</p>'),
-        (f'<p style="{styler}">We have compiled 30 random pieces of news from Atium, some of which were '
-        'predicted by our newly developed recommender engine to be of similar to your'
+        (f'<p style="{styler}">Welcome! Thank you for agreeing to participate in this experiment, where '
+         'we hope to use your inputs to futher optimize the recommender engine that we are currently '
+         'building. This exercise will take no longer than 20 mins. </p>'),
+        (f'<p style="{styler}">We have compiled 25 random pieces of news from Atium, some of which were '
+        'predicted by our newly developed recommender engine to be of close similarity to your'
         ' reading preferences.</p>'),
-        (f'<p style="{styler}">We would like your help to indicate which are relevant to your work and '
-        'which ones seem interesting to you. Kindly use the checkboxes'
-        ' to the right to indicate your choices and hit the submit button at the '
-        'bottom of the page. You may hit submit multiple times and we will only use '
-        'your latest submission.</p>'),
+        (f'<p style="{styler}">Please help to indicate on the checkboxes to the right which articles '
+         'are relevant to you. We will be asking you why certain articles are relevant or irrelevant '
+         'to you as you complete the exercise. Once you are done, hit the submit button at the bottom '
+         'of the page so that we have a record of your inputs.</p>'),
         '<p style="border-bottom: 1px solid grey">Kindly submit by <b>31 Jan 2022</b> please!</p>'
     ]
 
