@@ -34,7 +34,9 @@ def challenge():
     
     if submitted or pwd != '':
         if pwd in user2domain:
-            main(pwd, user2domain[pwd], data[user2domain[pwd]])
+            submitted, relevant = main(pwd, user2domain[pwd], data[user2domain[pwd]])
+            if submitted:
+                send(pwd, relevant, None)
         else:
             st.error('Wrong password')
             st.stop()
@@ -105,10 +107,8 @@ def main(user, domain, data):
                 b.write('')
                 b.write('')
                 
-                
-                
-        submitted = st.form_submit_button('Submit', on_click=send, kwargs=dict(user=user, relevant=relevant, interesting=None))
-    return submitted
+        submitted = st.form_submit_button('Submit')
+    return submitted, relevant
 if __name__ == '__main__':
     submitted = challenge()
     if submitted:
